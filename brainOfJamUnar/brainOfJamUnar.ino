@@ -131,14 +131,14 @@
       // set baud rate for communication
       
       Serial.begin(9600);
-      
+   /*   
       // set the data rate for tranmission
       vw_setup(2000);
       // Initialise the IO and ISR
       vw_set_ptt_inverted(true);    // Required for RF Link module
       vw_setup(1000);               // Bits per sec
       vw_set_tx_pin(3);   // pin 3 is used as the transmit data out into the TX Link module, change this to suit your needs.
-
+*/
       // Initialize to some sample values
   //    numbers[0] = 32767;
   //    numbers[1] = -2;
@@ -171,9 +171,15 @@
     void loop()
     {  
       delay(4000);
+      digitalWrite(FOR, HIGH);
       digitalWrite(BAC, HIGH);
+      digitalWrite(TRIGHT, HIGH);
+      digitalWrite(TLEFT, HIGH);
       delay(10000);
+      digitalWrite(FOR, LOW);
       digitalWrite(BAC, LOW);
+      digitalWrite(TRIGHT, LOW);
+      digitalWrite(TLEFT, LOW);
       delay(100000);
       // sensorCollectData();
       // transmitData();

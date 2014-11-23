@@ -6,18 +6,27 @@
     
     Power Supply Components:
     
-    9V Battery Holder
-    9V Battery
-    6v Slide Switch
+    The Microcontroller and sensors are mounted to a RadioShack Printed
+    Circuit board.
     
-    Power Supplin Connections:
+      9V Battery Holder
+      9V Battery
+      6v Slide Switch
+    
+    The Hexbug Spider XL is currently using its original power supply.
+    
+      3 AA Batteries - 1.5 Volts
+      Slide Switch
+    
+    Power Suppling Connections:
     
     Positive is 9V Positive terminal to one side of slide switch 
     (using both terminals) then center of Slide Switch (using both 
      terminals) to Vin (Voltage Input) on Arduino
     
     Negative is 9V Negative terminal to opposite side of slide switch 
-    (using both terminals) and to GND on Arduino.
+    (using both terminals) and to GND on Arduino.  The Hexbug Spider XL
+    is also grounded to the RadioShack Printed Circuit board.
     
     Sensory Input Components:
     
@@ -26,15 +35,16 @@
     Sensory Input Connections:
     
     All power to 5V Arduino with red
-    All Gnd to Gnd Arduino with yellow
-    All Trig cables orange
+    All Gnd to Gnd Arduino with black or orange
+    All Trig cables yellow
     All Echo cables green
-    frontSensor  trig to D9
-                 echo to D8
-    rightSensor  trig to D7
-                 echo to D6
-    leftSensor   trig to D5
+    
+    frontSensor  trig to D5
                  echo to D4
+    rightSensor  trig to D12
+                 echo to D13
+    leftSensor   trig to D6
+                 echo to D7
 
     Transmitter Components:
     
@@ -48,16 +58,26 @@
     
     Robotic Components:
     
-    Hexbug Spider
-    ST1155A Low-saturation, Low-voltage Bi-directional Motor Drivers
+    Hexbug Spider XL
+    
+    Using unknown motor driver.  Numbered left to right
+    with the dot in the top right:
+    
+        Top 2 - forward, Orange
+        Top 3 - backwards, Purple
+        Top 5 - turn right, Grey
+        Top 6 - turn left,  White
+        Bottom 2 - LED, Blue
     
     Robotic Connections:
     
-    ST1155A pin 2 (ENA1) wired Red to Arduino D10
-    ST1155A Pin 6 (IN1)  wired Green to Arduino D11
+    FOR wired Orange to Arduino D8
+    BAC  wired Purple to Arduino D11
     
-    ST1155A Pin 13 (ENA2) wired Orange to Arduino D12
-    ST1155A Pin 9 (IN2) wired Yellow to Arduino D13
+    TRIGHT wired Orange to Arduino D9
+    TLEFT wired Yellow to Arduino D10
+    
+    LED wired to Positive
     
     */
     
@@ -74,32 +94,33 @@
     // declare integer constants and initialize them to specific variables
     // for sensory input pins
     
-    const int trigPinFrontSensor = 9;
-    const int echoPinFrontSensor = 8;
+    const int trigPinFrontSensor = 5;
+    const int echoPinFrontSensor = 4;
     
-    const int trigPinRightSensor = 7;
-    const int echoPinRightSensor = 6;
+    const int trigPinRightSensor = 12;
+    const int echoPinRightSensor = 13;
     
-    const int trigPinLeftSensor  = 5;
-    const int echoPinLeftSensor  = 4;
+    const int trigPinLeftSensor  = 6;
+    const int echoPinLeftSensor  = 7;
     
-    int fDistance;
-    int rDistance;
-    int lDistance;
+  //  int fDistance;
+  //  int rDistance;
+  //  int lDistance;
     
     // Initialize and name pins for rf tranmission
     
-    int numbers[3]; // Change to number of integers you wish to spend
+  //  int numbers[3]; // Change to number of integers you wish to spend
     
     // Initialize and name motor control pins
     
-    const int ENA1 = 10; // Input pin that enable/disable drivers O1/O2
-    const int IN1  = 11; // Input pin that determines driving mode(forward,
+    const int FOR = 8; // Input pin that enable/disable drivers O1/O2
+    const int BAC  = 11; // Input pin that determines driving mode(forward,
                    // reverse, standby)
                   
-    const int ENA2 = 12; // Input pin that enable/disable drivers O3/O4
-    const int IN2  = 13; // Input pin that determines driving mode(forward,
+    const int TRIGHT = 9; // Input pin that enable/disable drivers O3/O4
+    const int TLEFT  = 10; // Input pin that determines driving mode(forward,
                    // reverse, standby)
+                   
     int itteration = 0;
     int i = 0;
     
@@ -119,9 +140,9 @@
       vw_set_tx_pin(3);   // pin 3 is used as the transmit data out into the TX Link module, change this to suit your needs.
 
       // Initialize to some sample values
-      numbers[0] = 32767;
-      numbers[1] = -2;
-      numbers[2] = 0;
+  //    numbers[0] = 32767;
+  //    numbers[1] = -2;
+  //    numbers[2] = 0;
       // set up sensor pin modes
       
       pinMode(trigPinFrontSensor, OUTPUT);
@@ -136,11 +157,11 @@
       
       // Set up motor control pins
       
-      pinMode(ENA1, OUTPUT);
-      pinMode(IN1, OUTPUT);
+      pinMode(FOR, OUTPUT);
+      pinMode(BAC, OUTPUT);
       
-      pinMode(ENA2, OUTPUT);
-      pinMode(IN2, OUTPUT);
+      pinMode(TRIGHT, OUTPUT);
+      pinMode(TLEFT, OUTPUT);
       
     }
     
@@ -148,18 +169,23 @@
     // Now finally for the Actual program
     
     void loop()
-    {
-      sensorCollectData();
-      transmitData();
-      reactToData();
+    {  
+      delay(4000);
+      digitalWrite(BAC, HIGH);
+      delay(10000);
+      digitalWrite(BAC, LOW);
+      delay(100000);
+      // sensorCollectData();
+      // transmitData();
+      // reactToData();
     }
     
-    void reactToData()
-    {
-     wallWalkerRight();
-    }
+//    void reactToData()
+//    {
+//     wallWalkerRight();
+//    }
     
-    void wallWalkerRight()
+/*    void wallWalkerRight()
     {
      // findWall();
       secureRightWall();
@@ -191,27 +217,27 @@
     
     void moveForward()
     {
-      digitalWrite(IN1, LOW);
-      digitalWrite(ENA1, HIGH);
-      digitalWrite(IN2, LOW);
-      digitalWrite(ENA2, LOW);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, HIGH);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, LOW);
     }
     
     void moveBackward()
     {
-      digitalWrite(IN1, HIGH);
-      digitalWrite(ENA1, HIGH);
-      digitalWrite(IN2, LOW);
-      digitalWrite(ENA2, LOW);
+      digitalWrite(FOR, HIGH);
+      digitalWrite(BAC, HIGH);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, LOW);
     }
     
     void moveRight()
     {
-      digitalWrite(IN1, LOW);
-      digitalWrite(ENA1, LOW);
-      digitalWrite(IN2, HIGH);
-      digitalWrite(ENA2, HIGH);
-    }
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, LOW);
+      digitalWrite(FOR, HIGH);
+      digitalWrite(BAC, HIGH);
+    }FOR
     
     void turnRight()
     {
@@ -223,23 +249,23 @@
     
     void moveLeft()
     {
-      digitalWrite(IN1, LOW);
-      digitalWrite(ENA1, LOW);
-      digitalWrite(IN2, LOW);
-      digitalWrite(ENA2, HIGH);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, LOW);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, HIGH);
     }
 
 void turnLeft()
     {
-      digitalWrite(IN1, LOW);
-      digitalWrite(ENA1, LOW);
-      digitalWrite(IN2, LOW);
-      digitalWrite(ENA2, HIGH);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, LOW);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, HIGH);
       delay(500);
-      digitalWrite(IN1, LOW);
-      digitalWrite(ENA1, HIGH);
-      digitalWrite(IN2, LOW);
-      digitalWrite(ENA2, LOW);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, HIGH);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, LOW);
       delay(150);
     }
 
@@ -253,15 +279,15 @@ void turnLeft()
     
     void moveLeftSlightly()
     {
-      digitalWrite(IN1, LOW);
-      digitalWrite(ENA1, LOW);
-      digitalWrite(IN2, LOW);
-      digitalWrite(ENA2, HIGH);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, LOW);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, HIGH);
       delay(50);
-      digitalWrite(IN1, LOW);
-      digitalWrite(ENA1, HIGH);
-      digitalWrite(IN2, LOW);
-      digitalWrite(ENA2, LOW);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, HIGH);
+      digitalWrite(FOR, LOW);
+      digitalWrite(BAC, LOW);
       delay(50);
     }
     // This program collects the data for the three sensors
@@ -310,7 +336,7 @@ void turnLeft()
   }
   delay(500);
      */
-    }
+ /*   }
   
 
 // Now for the program to transmit data
@@ -351,4 +377,4 @@ void leftSensorDistance()
   duration = pulseIn(echoPinLeftSensor, HIGH);
   lDistance = (duration/2) / 29.1;
 }
- 
+ */

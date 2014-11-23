@@ -71,8 +71,8 @@
     
     Robotic Connections:
     
-    FOR wired Orange to Arduino D8
-    BAC  wired Purple to Arduino D11
+    FOR wired Orange to Arduino D11
+    BAC  wired Purple to Arduino D8 
     
     TRIGHT wired Orange to Arduino D9
     TLEFT wired Yellow to Arduino D10
@@ -113,8 +113,8 @@
     
     // Initialize and name motor control pins
     
-    const int FOR = 8; // Input pin that enable/disable drivers O1/O2
-    const int BAC  = 11; // Input pin that determines driving mode(forward,
+    const int FOR = 11; // Input pin that enable/disable drivers O1/O2
+    const int BAC  = 8; // Input pin that determines driving mode(forward,
                    // reverse, standby)
                   
     const int TRIGHT = 9; // Input pin that enable/disable drivers O3/O4
@@ -172,9 +172,9 @@
     {  
       delay(4000);
       digitalWrite(FOR, HIGH);
-      digitalWrite(BAC, HIGH);
-      digitalWrite(TRIGHT, HIGH);
-      digitalWrite(TLEFT, HIGH);
+      digitalWrite(BAC, LOW);
+      digitalWrite(TRIGHT, LOW);
+      digitalWrite(TLEFT, LOW);
       delay(10000);
       digitalWrite(FOR, LOW);
       digitalWrite(BAC, LOW);
